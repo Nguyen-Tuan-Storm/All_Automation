@@ -3,12 +3,9 @@ def isValidPid(pid) {
 }
 
 def startAppiumServer(port, systemPort, udid, platform, automationName, ipAddress) {
-    def pidFile = "appium_${port}.pid" 
-    stopAppiumServer(pidFile)
     sleep(time: 2, unit: 'SECONDS')
 
-    def nodeConfigFile = "nodeconfig_${port}.json"
-    writeFile file: nodeConfigFile, text: """
+    def nodeConfig = """
     {
         "capabilities": [
             {
@@ -26,11 +23,11 @@ def startAppiumServer(port, systemPort, udid, platform, automationName, ipAddres
         }
     }
     """
-
+    
     sh """
     appium --port ${port} \
            --default-capabilities '{"systemPort": ${systemPort}, "udid": "${udid}", "newCommandTimeout": 300}' \
-           --nodeconfig ${nodeConfigFile} > /dev/null 2>&1 & echo \$! > ${pidFile}
+           --nodeconfig '${nodeConfig}' > /dev/null 2>&1 &
     """
 }
 
@@ -152,7 +149,7 @@ pipeline {
         APPIUM_SERVER_SYSTEM_PORT_2 = '8801'
         APPIUM_SERVER_UDID_2 = 'emulator-5556'
         APPIUM_SERVER_DEVICE_NAME_2 = 'May_2'
-        RETAILER_2 = "autoandroid2"
+        RETAILER_2 = "autoandroid3"
         APPIUM_SERVER_COMMAND_TIMEOUT = '300'
         OS_TYPE = "android"
 
@@ -169,6 +166,9 @@ pipeline {
         FOLDER_REPORT_2 = "${FOLDER_REPORT_MAN}/report2"
         FOLDER_REPORT_3 = "${FOLDER_REPORT_MAN}/report2may"
         FOLDER_REPORT_4 = "${FOLDER_REPORT_MAN}/report_all"
+
+        PACKAGE_POS_ANDROID = "net.citigo.kiotviet.pos.fnb.dev"
+        PACKAGE_MAN_ANDROID = "net.citigo.kiotviet.fnb.manager"
 
         OUTPUT_FILES_REMOVE_KEY_XML = """${FOLDER_REPORT_1}/output_final.xml,${FOLDER_REPORT_1}/output_final_1.xml,${FOLDER_REPORT_2}/output_final.xml,${FOLDER_REPORT_2}/output_final_1.xml,${FOLDER_REPORT_3}/output_final.xml,${FOLDER_REPORT_3}/output_final_1.xml"""
         MERGED_OUTPUT_XML = "${FOLDER_REPORT_4}/merge.xml"
@@ -410,5 +410,23 @@ pipeline {
             }
         }
 
+    }
+    post {
+        always {
+            script {
+                def uninstallCommands = [
+                    "adb -s ${env.APPIUM_SERVER_UDID_1} uninstall ${env.PACKAGE_POS_ANDROID}",
+                    "adb -s ${env.APPIUM_SERVER_UDID_2} uninstall ${env.PACKAGE_POS_ANDROID}",
+                    "adb -s ${env.APPIUM_SERVER_UDID_1} uninstall ${env.PACKAGE_MAN_ANDROID}",
+                    "adb -s ${env.APPIUM_SERVER_UDID_2} uninstall ${env.PACKAGE_MAN_ANDROID}"
+                ]
+
+                uninstallCommands.each { command ->
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh command
+                    }
+                }
+            }
+        }
     }
 }
