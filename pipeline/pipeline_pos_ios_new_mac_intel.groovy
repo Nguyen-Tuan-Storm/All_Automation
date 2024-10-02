@@ -127,7 +127,7 @@ pipeline {
         USER_NAME = "thanh.pc"
         ROOT_MAC = "/Users/${USER_NAME}/Desktop"
         //sh(returnStdout: true, script: "ifconfig | grep 'inet ' | grep -v 127.0.0.1 | awk '{print \$2}' | head -n 1").trim()
-        IP_ADDRESS = "192.168.134.250"
+        IP_ADDRESS = "192.168.134.10"
         // ANDROID_HOME = "/Users/${USER_NAME}/Library/Android/sdk"
         // PATH = "${env.PATH}:${env.ANDROID_HOME}/emulator:${env.ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/emulator"
         APPIUM_AUTOMATION_PLATFORM_IOS='iOS'
@@ -294,7 +294,7 @@ pipeline {
             steps {
                 dir("${DOWNLOAD_DIR_OLD}") {
                     sh """
-                        gdrive download --force ${params.driveId_old}
+                        gdrive files download ${params.driveId_old} 
                         zip_file=\$(ls *.zip)
                         unzip -o \$zip_file 
                         rm \$zip_file
@@ -306,7 +306,7 @@ pipeline {
             steps {
                 dir("${DOWNLOAD_DIR_NEW}") {
                     sh """
-                        gdrive download --force ${params.driveId_new}
+                        gdrive files download ${params.driveId_new}
                         zip_file=\$(ls *.zip)
                         mkdir temp_unzip_dir
                         unzip -o \$zip_file -d temp_unzip_dir

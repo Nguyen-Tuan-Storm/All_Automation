@@ -1,0 +1,35 @@
+{
+    "server": {
+      "address": "127.0.0.1",
+      "port": 4723,
+      "allow-cors": true,
+      "allow-insecure": [],
+      "base-path": "/",
+      "callback-address": "127.0.0.1",
+      "callback-port": 4723,
+      "debug-log-spacing": true,
+      "default-capabilities": {
+        "platformName": "Android",
+        "automationName": "UiAutomator2",
+        "systemPort": 8800,
+        "newCommandTimeout": 500,
+        "udid": "May_1"
+      },
+      "deny-insecure": [],
+      "keep-alive-timeout": 600,
+      "local-timezone": true,
+      "log": "/tmp/appium.log",
+      "log-level": "info",
+      "log-no-colors": false,
+      "log-timestamp": true,
+      "long-stacktrace": false,
+      "no-perms-check": false,
+      "relaxed-security": false,
+      "session-override": false,
+      "strict-caps": true,
+      "tmp": "/tmp",
+      "trace-dir": "/tmp/appium-instruments",
+      "use-drivers": ["uiautomator2"]
+    }
+  }
+  
