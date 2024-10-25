@@ -26,8 +26,9 @@ def startAppiumServer(port, systemPort, udid, platform, automationName, ipAddres
     
     sh """
     appium --port ${port} \
-           --default-capabilities '{"systemPort": ${systemPort}, "udid": "${udid}", "newCommandTimeout": 600, "deviceReadyTimeout": 120 }' \
-           --nodeconfig '${nodeConfig}' > /dev/null 2>&1 &
+       --default-capabilities '{"systemPort": ${systemPort}, "udid": "${udid}", "newCommandTimeout": 600, "deviceReadyTimeout": 120, "appWaitDuration": 80000}' \
+       --nodeconfig '${nodeConfig}' > /dev/null 2>&1 &
+
     """
 }
 
@@ -137,6 +138,7 @@ pipeline {
         APPIUM_AUTOMATION_PLATFORM_VERSION='15.5'
         APPIUM_AUTOMATION_NAME_IOS='XCUITest'
         IS_HEADLESS = "false"
+        //IS_HEADLESS = "true"
         UPDATE_APP = "False"
 
         APPIUM_SERVER_PORT_1 = '4727'
@@ -158,16 +160,30 @@ pipeline {
         // iPhone 13 Pro Simulator (15.5)
         APPIUM_SERVER_UDID_3 = '8D80A693-526F-43E8-ABEA-D4C5B9C2C156'
         APPIUM_SERVER_DEVICE_NAME_3 = 'iPhone'
+
+        APPIUM_SERVER_PORT_4 = '4730'
+        APPIUM_SERVER_SYSTEM_PORT_4 = '8803'
+        // iPhone 12 Pro Max Simulator (15.5)
+        APPIUM_SERVER_UDID_4 = '6F68E34F-286F-4FCE-B757-9138907E6F38'
+        APPIUM_SERVER_DEVICE_NAME_4 = 'iPhone'
         APPIUM_SERVER_COMMAND_TIMEOUT = '300'
         RETAILER_3 = "autoandroid4"
 
+        // Create List Tag
+        TAG_RUN_1 = "SYS1"
+        TAG_RUN_2 = "SYS2"
+        TAG_RUN_3 = "SYS3"
+        TAG_RUN_2MAY_1 = "SYS2M_1"
+        TAG_RUN_2MAY_2 = "SYS2M_2"
+        
      
 
         REMOTE_NODE_1 = "http://${env.IP_ADDRESS}:${env.APPIUM_SERVER_PORT_1}/wd/hub"
         REMOTE_NODE_2 = "http://${env.IP_ADDRESS}:${env.APPIUM_SERVER_PORT_2}/wd/hub"
         REMOTE_NODE_3 = "http://${env.IP_ADDRESS}:${env.APPIUM_SERVER_PORT_3}/wd/hub"
+        REMOTE_NODE_4 = "http://${env.IP_ADDRESS}:${env.APPIUM_SERVER_PORT_4}/wd/hub"
 
-        FOLDER_AUTO_IOS = "${ROOT_MAC}/Auto_IOS_Jenkins"
+        FOLDER_AUTO_IOS = "${ROOT_MAC}/Auto_IOS_Jenkins_NewUI"
         DOWNLOAD_DIR_OLD = "${FOLDER_AUTO_IOS}/drivers"
         DOWNLOAD_DIR_NEW = "${FOLDER_AUTO_IOS}/drivers"
         // PATH_ANDROID_POS = "${ROOT_MAC}/Automation_Android_Jenkins/drivers/AND-FNB-POS-AF.apk"
@@ -175,21 +191,23 @@ pipeline {
         FOLDER_REPORT_IOS = "${ROOT_MAC}/report_ios"
         FOLDER_REPORT_1 = "${FOLDER_REPORT_IOS}/report1"
         FOLDER_REPORT_2 = "${FOLDER_REPORT_IOS}/report2"
-        FOLDER_REPORT_3 = "${FOLDER_REPORT_IOS}/report2may"
-        FOLDER_REPORT_4 = "${FOLDER_REPORT_IOS}/report_all"
+        FOLDER_REPORT_3 = "${FOLDER_REPORT_IOS}/report3"
+        FOLDER_REPORT_4 = "${FOLDER_REPORT_IOS}/report2may_1"
+        FOLDER_REPORT_5 = "${FOLDER_REPORT_IOS}/report2may_2"
+        FOLDER_REPORT_6 = "${FOLDER_REPORT_IOS}/report_all"
 
-        OUTPUT_FILES_REMOVE_KEY_XML = """${FOLDER_REPORT_1}/output_final.xml,${FOLDER_REPORT_1}/output_final_1.xml,${FOLDER_REPORT_2}/output_final.xml,${FOLDER_REPORT_2}/output_final_1.xml,${FOLDER_REPORT_3}/output_final.xml,${FOLDER_REPORT_3}/output_final_1.xml"""
-        MERGED_OUTPUT_XML = "${FOLDER_REPORT_4}/merge.xml"
-        MERGED_OUTPUT_LOG = "${FOLDER_REPORT_4}/merge_log.html"
-        MERGED_OUTPUT_REPORT = "${FOLDER_REPORT_4}/merge_report.html"
-        JIRA_OUTPUT_PDF = "${FOLDER_REPORT_4}/merge_log.pdf"
+        OUTPUT_FILES_REMOVE_KEY_XML = """${FOLDER_REPORT_1}/output_final.xml,${FOLDER_REPORT_1}/output_final_1.xml,${FOLDER_REPORT_2}/output_final.xml,${FOLDER_REPORT_2}/output_final_1.xml,${FOLDER_REPORT_3}/output_final.xml,${FOLDER_REPORT_3}/output_final_1.xml,${FOLDER_REPORT_4}/output_final.xml,${FOLDER_REPORT_4}/output_final_1.xml,${FOLDER_REPORT_5}/output_final.xml,${FOLDER_REPORT_5}/output_final_1.xml"""
+        MERGED_OUTPUT_XML = "${FOLDER_REPORT_6}/merge.xml"
+        MERGED_OUTPUT_LOG = "${FOLDER_REPORT_6}/merge_log.html"
+        MERGED_OUTPUT_REPORT = "${FOLDER_REPORT_6}/merge_report.html"
+        JIRA_OUTPUT_PDF = "${FOLDER_REPORT_6}/merge_log.pdf"
         JIRA_DATA_TICKET_TXT = "${ROOT_MAC}/data_jira/ios/data.txt"
-        PUSH_CHAT_BOT_PY = "${ROOT_MAC}/push_chat_bot/bot1234.py"
-        PUSH_JIRA_DESCRIPTIONS="${ROOT_MAC}/push_chat_bot/jira1234.py"
+        PUSH_CHAT_BOT_PY = "${ROOT_MAC}/push_chat_bot/bot.py"
+        PUSH_JIRA_DESCRIPTIONS="${ROOT_MAC}/push_chat_bot/jira.py"
         // CREATE_HTTPLIB2_ENV = "${ROOT_MAC}/push_chat_bot/httplib2env1234"
         // CREATE_JIRA_ENV = "${ROOT_MAC}/push_chat_bot/jiraenv1234"
-        HTTPLIB2_ENV = "${ROOT_MAC}/push_chat_bot/httplib2env1234/bin/activate"
-        JIRA_ENV = "${ROOT_MAC}/push_chat_bot/jiraenv1234/bin/activate"
+        HTTPLIB2_ENV = "${ROOT_MAC}/push_chat_bot/httplib2env/bin/activate"
+        JIRA_ENV = "${ROOT_MAC}/push_chat_bot/jiraenv/bin/activate"
         CLIENT_RUN_AUTO = "IOS POS SYSTEM - UPDATE APP"
     }
     stages {
@@ -198,17 +216,19 @@ pipeline {
                 script {
                     def folders = [
                         "${FOLDER_REPORT_IOS}",
-                        "${FOLDER_REPORT_IOS}/report1",
-                        "${FOLDER_REPORT_IOS}/report2",
-                        "${FOLDER_REPORT_IOS}/report2may",
-                        "${FOLDER_REPORT_IOS}/report_all",
-                        "${ROOT_MAC}/push_chat_bot",
-                        "${ROOT_MAC}/data_jira",
-                        "${ROOT_MAC}/data_jira/man",
-                        "${ROOT_MAC}/data_jira/ios",
-                        "${ROOT_MAC}/data_jira/postouch",
-                        "${ROOT_MAC}/data_jira/android",
-                        "${ROOT_MAC}/data_jira/web",
+                        "${FOLDER_REPORT_1}",
+                        "${FOLDER_REPORT_2}",
+                        "${FOLDER_REPORT_3}",
+                        "${FOLDER_REPORT_4}",
+                        "${FOLDER_REPORT_5}",
+                        "${FOLDER_REPORT_6}",
+                        // "${ROOT_MAC}/push_chat_bot",
+                        // "${ROOT_MAC}/data_jira",
+                        // "${ROOT_MAC}/data_jira/man",
+                        // "${ROOT_MAC}/data_jira/ios",
+                        // "${ROOT_MAC}/data_jira/postouch",
+                        // "${ROOT_MAC}/data_jira/android",
+                        // "${ROOT_MAC}/data_jira/web",
                         "${FOLDER_AUTO_IOS}"
                     ]
                     folders.each { folder ->
@@ -222,13 +242,44 @@ pipeline {
         stage('Checkout') {
                  steps {
                      checkout([$class: 'GitSCM',
-                         branches: [[name: '*/new_ui']],
+                         branches: [[name: '*/new-ui']],
                          userRemoteConfigs: [[credentialsId: 'MAC',
                                           url: 'https://gitlab.citigo.com.vn/kvfnb/automation-test/kv-fnb-ios-auto-test']],
-                              extensions: [[$class: 'RelativeTargetDirectory', 
-                              relativeTargetDir: "${FOLDER_AUTO_IOS}"]]])    
+                      extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: "${FOLDER_AUTO_IOS}"], 
+                      [$class: 'CloneOption', timeout: 30],
+                      [$class: 'CheckoutOption', timeout: 30],
+                  ]
+        ])
              }
         }
+        stage("Start list simulator") {
+    steps {
+        script {
+            def startSimulatorCommands = [
+                "xcrun simctl boot ${APPIUM_SERVER_UDID_1}",
+                "xcrun simctl boot ${APPIUM_SERVER_UDID_2}",
+                "xcrun simctl boot ${APPIUM_SERVER_UDID_3}",
+                "xcrun simctl boot ${APPIUM_SERVER_UDID_4}"
+            ]
+            
+            def parallelStages = [:]  // Tạo đối tượng chứa các stage chạy song song
+
+            startSimulatorCommands.eachWithIndex { command, index ->
+                parallelStages["Start Simulator ${index + 1}"] = {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh command
+                    }
+                }
+            }
+
+            parallel parallelStages
+           // Mở giao diện Simulator lên màn hình
+            sh "open -a Simulator"
+        }
+    }
+}
+
         stage('Delete All File .zip') {
                 steps {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -248,15 +299,15 @@ pipeline {
                  }
              }
         //Hiện tại source folder file .app old và .app new để cùng nhau nên là chỉ cần xóa 1 cái là đc
-        stage('Delete All .app NEW Files IOS POS') {
-                 steps {
-                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                         dir("${DOWNLOAD_DIR_NEW}") {
-                             sh "rm -r ${DOWNLOAD_DIR_NEW}/*.app"
-                         }
-                     }
-                 }
-             }
+        // stage('Delete All .app NEW Files IOS POS') {
+        //          steps {
+        //              catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //                  dir("${DOWNLOAD_DIR_NEW}") {
+        //                      sh "rm -r ${DOWNLOAD_DIR_NEW}/*.app"
+        //                  }
+        //              }
+        //          }
+        //      }
          stage('Cleanup Report Folders') {
             steps {
                 script {
@@ -299,34 +350,6 @@ pipeline {
                 }
             }
         }
-        //  stage('Download OLD Version App POS IOS') {
-        //      steps {
-        //          dir("${DOWNLOAD_DIR_OLD}") {
-        //              script {
-        //                  sh "curl -o FNB_MAN.apk '${params.link_old}'"
-        //                  if (fileExists('FNB_MAN.apk')) {
-        //                      echo "Download old version app man android success"
-        //                  } else {
-        //                      error "Download old version error"
-        //                  }
-        //              }
-        //          }
-        //      }
-        //  }
-        //  stage('Download NEW Version App POS IOS') {
-        //      steps {
-        //          dir("${DOWNLOAD_DIR_NEW}") {
-        //              script {
-        //                  sh "curl -o FNB_MAN_NEW.apk '${params.link_new}'"
-        //                  if (fileExists('FNB_MAN_NEW.apk')) {
-        //                      echo "Download new version app man android success"
-        //                  } else {
-        //                      error "Download new version error"
-        //                  }
-        //              }
-        //          }
-        //      }
-        //  }
         stage('Start Appium Servers') {
             steps {
                 script {
@@ -356,59 +379,106 @@ pipeline {
                         env.APPIUM_AUTOMATION_NAME_IOS,
                         env.IP_ADDRESS
                     )
+                    startAppiumServer(
+                        env.APPIUM_SERVER_PORT_4,
+                        env.APPIUM_SERVER_SYSTEM_PORT_4,
+                        env.APPIUM_SERVER_UDID_4,
+                        env.APPIUM_AUTOMATION_PLATFORM_IOS,
+                        env.APPIUM_AUTOMATION_NAME_IOS,
+                        env.IP_ADDRESS
+                    )
                     
                 }
             }
         }
-        stage('Run Tag 2 May') {
-            steps {
-                dir("${FOLDER_AUTO_IOS}") {
-                         script {
-                    sh "sleep 3"
-                    runRobotTests(FOLDER_AUTO_IOS,
-                    FOLDER_REPORT_3, 
-                   "MAN_HD_01",
-                    RETAILER_1, IS_HEADLESS, 
-                    APPIUM_SERVER_DEVICE_NAME_1, APPIUM_SERVER_DEVICE_NAME_3, 
-                    APPIUM_SERVER_UDID_1, APPIUM_SERVER_UDID_3, APPIUM_AUTOMATION_PLATFORM_VERSION,
-                    REMOTE_NODE_1, REMOTE_NODE_3, APPIUM_SERVER_SYSTEM_PORT_1, APPIUM_SERVER_SYSTEM_PORT_3,
-                    OS_TYPE, PATH_ANDROID_POS, UPDATE_APP)
+        stage("Parallel test 2MAY") {
+        parallel {
+            stage('Run Tag SYS2M_1') {
+                steps {
+                    dir("${FOLDER_AUTO_IOS}") {
+                            script {
+                        sh "sleep 3"
+                        runRobotTests(FOLDER_AUTO_IOS,
+                        FOLDER_REPORT_4, 
+                    TAG_RUN_2MAY_1,
+                        RETAILER_1, IS_HEADLESS, 
+                        APPIUM_SERVER_UDID_1, APPIUM_SERVER_UDID_2, APPIUM_AUTOMATION_PLATFORM_VERSION,
+                        REMOTE_NODE_1, REMOTE_NODE_2, APPIUM_SERVER_SYSTEM_PORT_1, APPIUM_SERVER_SYSTEM_PORT_2,
+                        UPDATE_APP)
+                }
+                    }
+                }
             }
+            stage('Run Tag SYS2M_2') {
+                steps {
+                    dir("${FOLDER_AUTO_IOS}") {
+                            script {
+                        sh "sleep 3"
+                        runRobotTests(FOLDER_AUTO_IOS,
+                        FOLDER_REPORT_5, 
+                        TAG_RUN_2MAY_2,
+                        RETAILER_3, IS_HEADLESS, 
+                        APPIUM_SERVER_UDID_4, APPIUM_SERVER_UDID_4, APPIUM_AUTOMATION_PLATFORM_VERSION,
+                        REMOTE_NODE_3, REMOTE_NODE_4, APPIUM_SERVER_SYSTEM_PORT_3, APPIUM_SERVER_SYSTEM_PORT_4,
+                        UPDATE_APP)
+                }
+                    }
                 }
             }
         }
-        stage("parallel test") {
+        }
+        stage('Shutdown APPIUM_SERVER_UDID_4') {
+            steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        timeout(time: 10, unit: 'SECONDS') {
+                            sh "xcrun simctl shutdown ${APPIUM_SERVER_UDID_4}"
+                        }
+                    }
+            }
+        }
+        stage("Parallel test SYS1 SYS2 SYS3") {
         parallel {
-            stage("Run Tag 1") {
+            stage("Run Tag SYS1") {
                 steps {
                      dir("${FOLDER_AUTO_IOS}") {
                          script {
-                    sh "sleep 3"
                     runRobotTests(FOLDER_AUTO_IOS,
                     FOLDER_REPORT_1, 
-                   "MAN_ADD_ACCOUNT_01",
+                    TAG_RUN_1,
                     RETAILER_1, IS_HEADLESS, 
-                    APPIUM_SERVER_DEVICE_NAME_1, APPIUM_SERVER_DEVICE_NAME_2, 
                     APPIUM_SERVER_UDID_1, APPIUM_SERVER_UDID_2, APPIUM_AUTOMATION_PLATFORM_VERSION,
                     REMOTE_NODE_1, REMOTE_NODE_2, APPIUM_SERVER_SYSTEM_PORT_1, APPIUM_SERVER_SYSTEM_PORT_2,
-                    OS_TYPE, PATH_ANDROID_POS, UPDATE_APP)
+                    UPDATE_APP)
             }
                 }
                 }
             }
-            stage("Run Tag 2") {
+            stage("Run Tag SYS2") {
                 steps {
                      dir("${FOLDER_AUTO_IOS}") {
                          script {
-                    sh "sleep 5"
                     runRobotTests(FOLDER_AUTO_IOS,
                     FOLDER_REPORT_2, 
-                   "MAN_ADD_NCC_01",
+                    TAG_RUN_2,
                     RETAILER_2, IS_HEADLESS, 
-                    APPIUM_SERVER_DEVICE_NAME_2, APPIUM_SERVER_DEVICE_NAME_1,
                     APPIUM_SERVER_UDID_2, APPIUM_SERVER_UDID_1, APPIUM_AUTOMATION_PLATFORM_VERSION,
-                    REMOTE_NODE_2, REMOTE_NODE_1, APPIUM_SERVER_SYSTEM_PORT_2, APPIUM_SERVER_SYSTEM_PORT_1, 
-                    OS_TYPE, PATH_ANDROID_POS, UPDATE_APP)
+                    REMOTE_NODE_2, REMOTE_NODE_1, APPIUM_SERVER_SYSTEM_PORT_2, APPIUM_SERVER_SYSTEM_PORT_1,
+                    UPDATE_APP)
+            }
+                }
+                }
+            }
+            stage("Run Tag SYS3") {
+                steps {
+                     dir("${FOLDER_AUTO_IOS}") {
+                         script {
+                    runRobotTests(FOLDER_AUTO_IOS,
+                    FOLDER_REPORT_3, 
+                    TAG_RUN_3,
+                    RETAILER_3, IS_HEADLESS, 
+                    APPIUM_SERVER_UDID_3, APPIUM_SERVER_UDID_4, APPIUM_AUTOMATION_PLATFORM_VERSION,
+                    REMOTE_NODE_3, REMOTE_NODE_4, APPIUM_SERVER_SYSTEM_PORT_3, APPIUM_SERVER_SYSTEM_PORT_4,
+                    UPDATE_APP)
             }
                 }
                 }
@@ -443,6 +513,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                   script {
+                    sh "sleep 3"
                     sh """
                 source ${HTTPLIB2_ENV} &&
                 python3 ${PUSH_CHAT_BOT_PY} ${MERGED_OUTPUT_XML} ${params.Jira_Xray_Ticket} "${CLIENT_RUN_AUTO}" 
@@ -463,6 +534,29 @@ pipeline {
             }
             }
         }
-
     }
+    post {
+        always {
+            script {
+                // def shutdownCommands = [
+                //     "xcrun simctl shutdown ${APPIUM_SERVER_UDID_1}",
+                //     "xcrun simctl shutdown ${APPIUM_SERVER_UDID_2}",
+                //     "xcrun simctl shutdown ${APPIUM_SERVER_UDID_3}",
+                //     "xcrun simctl shutdown ${APPIUM_SERVER_UDID_4}"
+                // ]
+
+                // shutdownCommands.each { command ->
+                //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                //         timeout(time: 10, unit: 'SECONDS') {
+                //             sh command
+                //         }
+                //     }
+                // }
+                 dir("${FOLDER_AUTO_IOS}") {
+                    sh "sleep 2"
+                    sh "killall \"Simulator\" || true"
+                }
+            }
+        }
+    }    
 }
